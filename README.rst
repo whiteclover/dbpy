@@ -182,6 +182,7 @@ execute(sql, args=None, key='default'):
 select
 -----------
 
+select用于构建select 查询语言。
 
 select(table, key='default'):
 
@@ -398,6 +399,7 @@ expr
 insert
 -----------
 
+insert用于构建insert into的sql语句。
 
 insert(table, key='default'):
 
@@ -431,6 +433,7 @@ insert(table, key='default'):
 update
 -----------
 
+update用于构建update的sql语句
 
 update(table, key='default'):
 
@@ -479,6 +482,8 @@ limit
 delete
 -----------
 
+
+delete 用于构建delete from的sql语句。
 
 delete(table, key='default'):
 
