@@ -73,7 +73,7 @@ DB API
 setup
 ---------
 
-:config: 是数据库连接参数，可以传入MySQLDB#connect接口中所有的可选参数。 其中``max_idel`` 相对是mysql服务端 connect_timeout配置,默认10秒。
+:config: 是数据库连接参数，可以传入MySQLDB#connect接口中所有的可选参数。 其中``max_idle`` 相对是mysql服务端 connect_timeout配置,默认10秒。
 :minconn: 为当前数据库连接池保持最小连接池，默认为5
 :maxconn: 为当前数据库连接池最大连接池，默认为10
 :adapter: 为适配器名，当前只支持 mysql
