@@ -2,13 +2,7 @@ DBPY
 #####
 
 
-dbpy是一个python写的数据库CURD人性化api库。借鉴了 `webpy db <https://github.com/webpy/webpy>`_ 和 `drupal database <https://www.drupal.org/developing/api/database>`_ 的设计。 如果你喜欢 tornado db 或者 webpy db这类轻巧的db库，或者想发挥原生SQL优势，那么绝对值得一试。 
-
-
-.. contents::
-    :depth: 3
-
-
+dbpy是一个python写的数据库CURD人性化api库。借鉴了 `webpy db <https://github.com/webpy/webpy>`_ 和 `drupal database <https://www.drupal.org/developing/api/database>`_ 的设计。 如果喜欢 tornado db 或者 webpy db这类轻巧的db库，或者想发挥原生SQL优势, 那么可以一试。
 
 
 Featues
@@ -19,6 +13,12 @@ Featues
 #. 线程安全的连接池
 #. 支持读写分离（当前限定只能是一主多副模式）
 #. 支持简单事务
+
+
+.. contents::
+    :depth: 3
+
+
 
 
 Install
