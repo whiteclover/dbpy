@@ -593,7 +593,7 @@ Future
 下面是个人一些想法：
 
 #. 为select加入join构建方法糖。
-#. 尝试完成schame类，用于创建表，修改表结构等。
+#. 尝试完成schema类，用于创建表，修改表结构等。
 #. 加入一些mysql特有的sql方法糖，比如replace， on dup更新等。
 #. 优化改进pool连接池，比如加入固定大小连接池的pool。
 
