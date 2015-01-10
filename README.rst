@@ -132,11 +132,13 @@ query(sql, args=None, many=None, as_dict=False, key='default'):
     # > ((1L, u'user_1'),)
 
     # Wanna return dict row
-    print db.query('SELECT * FROM users WHERE uid=%s and name=%s', (1, 'user_1'), as_dict=True)
+    print db.query('SELECT * FROM users WHERE uid=%s and name=%s', 
+                (1, 'user_1'), as_dict=True)
     # > ({'uid': 1L, 'name': u'user_1'},)
 
     # Use fetchmany(many) then yeild, Return generator
-    res = db.query('SELECT * FROM users WHERE uid=%s and name=%s', (1, 'user_1'), many=5, as_dict=True)
+    res = db.query('SELECT * FROM users WHERE uid=%s and name=%s', 
+                    (1, 'user_1'), many=5, as_dict=True)
     print res
     print res.next()
     # > <generator object _yield at 0x7f818f4b6820>
@@ -174,7 +176,7 @@ execute(sql, args=None, key='default'):
 
 
     # use social db
-    print db.execute('delete from events where created_at<%s', (expired, ), key='social')
+    db.execute('delete from events where created_at<%s', (expired, ), key='social')
     # > 10
 
 select
@@ -449,7 +451,8 @@ update 主要可用的方法是mset和set， mset：
     db.update('users').mset({'name':None, 'uid' : 12}).condition('name','user_1')
     # > UPDATE `users` SET `name` = %s, `uid` = %s WHERE  `name` = %s 
 
-    q = db.update('users').set('name', 'update_test').set('uid', 12).condition('name', 'user_2').condition('uid', 2) # .execute()
+    q = (db.update('users').set('name', 'update_test').set('uid', 12)
+        .condition('name', 'user_2').condition('uid', 2)) # .execute()
     print q.to_sql()
     # > UPDATE `users` SET `name` = %s, `uid` = %s WHERE  `name` = %s AND `uid` = %s 
   
@@ -507,7 +510,8 @@ to_sql and str
 .. code-block:: python
     
 
-    q = db.update('users').set('name', 'update_test').set('uid', 12).condition('name', 'user_2').condition('uid', 2)
+    q = (db.update('users').set('name', 'update_test').set('uid', 12)
+            .condition('name', 'user_2').condition('uid', 2))
     print q.to_sql()
     print q
     # > UPDATE `users` SET `name` = %s, `uid` = %s WHERE  `name` = %s AND `uid` = %s 
@@ -531,14 +535,17 @@ transaction(table, key='default'):
     # with context
     with db.transaction() as t:
         t.delete('users').condition('uid', 1).execute()
-        t.update('users').mset({'name':None, 'uid' : 12}).condition('name','user_1').execute()
+        (t.update('users').mset({'name':None, 'uid' : 12})
+            .condition('name','user_1').execute())
 
 
     # 普通用法
     t = db.transaction()
     t.begin()
     t.delete('users').condition('uid', 1).execute()
-    t.update('users').mset({'name':None, 'uid' : 12}).condition('name','user_1').execute()
+    (t.update('users').mset({'name':None, 'uid' : 12})
+        .condition('name','user_1').execute())
+
     #这里将会提交，如果失败将会rollback
     t.commit()
 
@@ -563,7 +570,8 @@ simple orm
     if user and user.check('password'):
         print 'auth'
 
-    user = model.User('username', 'email', 'real_name', 'password', 'bio', 'status', 'role')
+    user = model.User('username', 'email', 'real_name', 'password', 
+            'bio', 'status', 'role')
     if Backend('user').create(user):
         print 'fine'
 
@@ -576,7 +584,8 @@ simple orm
         print 'delete user failed'
 
 
-    post = model.Post('title', 'slug', 'description', 'html', 'css', 'js', 'category', 'status', 'comments', 'author')
+    post = model.Post('title', 'slug', 'description', 'html', 'css', 'js', 
+            'category', 'status', 'comments', 'author')
     if not Backend('post').create(post):
         print 'created failed'
 
