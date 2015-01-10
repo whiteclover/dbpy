@@ -9,7 +9,7 @@ dbpy是一个python写的数据库CURD人性化api库。借鉴了 `webpy db <htt
 
 
 
-为什么值得一试
+Featues
 ================
 
 #. 灵活简单
@@ -19,7 +19,7 @@ dbpy是一个python写的数据库CURD人性化api库。借鉴了 `webpy db <htt
 #. 支持简单事务
 
 
-如何安装
+Install
 ==============
 
 从github上fork下来，终端执行下面命令:
@@ -32,7 +32,7 @@ dbpy是一个python写的数据库CURD人性化api库。借鉴了 `webpy db <htt
 .. note:: 安装前先安装 ``MySQLdb`` (``MySQL-python``) 依赖python库
 
 
-开发 DIY
+Development
 ===========
 
 下载后终端执行:
@@ -43,7 +43,7 @@ dbpy是一个python写的数据库CURD人性化api库。借鉴了 `webpy db <htt
     python setup.py develop
 
 
-兼容性
+Compatibility
 =============
 
 在 Python 2.7.x 测试开发
@@ -185,7 +185,7 @@ select(table, key='default'):
 :table: 选定表
 :key: 用于指定使用那个数据库。
 
-简单的全字段查询
+select all
 ~~~~~~~~~~~~~~~~
 
 .. code-block:: python
@@ -193,8 +193,8 @@ select(table, key='default'):
     db.select('users')
     # > SELECT * FROM `users`
 
-指定字段
-~~~~~~~~~~~~~~
+specific columns
+~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -202,7 +202,7 @@ select(table, key='default'):
     # > SELECT `uid`, `name` FROM `users`
 
 
-如何返回查询结果
+execute
 ~~~~~~~~~~~~~~~~
 
 在构建好查询条语句后使用execute api可以返回结果。
@@ -361,7 +361,7 @@ null condition
     # > WHERE  `name` IS NULL  
 
 
-and_ && or_
+and && or
 ----------------
 
 使用 db.and_(), db.or_() 可以构建and或or粘合的条件组合。
@@ -579,7 +579,7 @@ simple orm
     if not Backend('post').create(post):
         print 'created failed'
 
-未来
+Future
 --------
 
 当前只支持mysql适配驱动，因为个人并不熟悉其他关联数据库，dbpy的设计比较灵活，所以如果有高手可以尝试写写其他数据库适配，仿照 `db/mysql目录 <https://github.com/thomashuang/dbpy/blob/master/db/mysql>`_ 如果写pgsql的适配应该不会多余800行代码。
