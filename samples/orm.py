@@ -13,9 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import logging
 import db
 
 from model import User, Post
+
+logger = logging.getLogger(__name__)
 
 class BaseMapper(object):
 
@@ -90,7 +93,7 @@ class UserMapper(BaseMapper,  PrimaryTrait):
         q = db.update(self.table)
         data = dict( (_, getattr(user, _)) for _ in ('username', 'email', 'real_name',
                 'password', 'bio', 'status', 'role'))
-        q.set(**data)
+        q.mset(data)
         return q.condition('uid', user.uid).execute()
 
     def delete(self, user):
@@ -133,7 +136,7 @@ class PostMapper(BaseMapper):
         q = db.update(self.table)
         data = dict( (_, getattr(page, _)) for _ in ('title', 'slug', 'description', 'html', 'css', 'js', 
             'category', 'status', 'comments'))
-        q.set(**data)
+        q.mset(data)
         return q.condition('pid', page.pid).execute()
 
     def delete(self, page_id):
