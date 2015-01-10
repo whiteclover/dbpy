@@ -414,7 +414,7 @@ insert(table, key='default'):
 
 
     q = db.insert('users').fields('name').values({'name': 'insert_1'}).values(('insert_2',))
-    # > INSERT INTO `users`(`name`) VALUES(%s)
+    # > INSERT INTO `users` (`name`) VALUES(%s)
     print q._values
     # > [('insert_1',), ('insert_2',)]
 

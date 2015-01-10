@@ -49,7 +49,7 @@ class InsertQuery(Query):
     def compile(self):
         sql = 'INSERT INTO ' + self.dialect.quote_table(self._table)
         if self._columns:
-            sql += '(' + ', '.join([self.dialect.quote_column(_) for _ in self._columns]) + ')'
+            sql += ' (' + ', '.join([self.dialect.quote_column(_) for _ in self._columns]) + ')'
         sql += ' VALUES(' + ', '.join(['%s' for _ in range(len(self._values[0]))]) + ')'
         return sql
 
