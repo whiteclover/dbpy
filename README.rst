@@ -1,6 +1,10 @@
 DBPY
 #####
 
+
+.. contents::
+    :depth: 3
+
 dbpy是一个python写的数据库CURD人性化api库。借鉴了 `webpy db <https://github.com/webpy/webpy>`_ 和 `drupal database <https://www.drupal.org/developing/api/database>`_ 的设计。 如果你喜欢 tornado db 或者 webpy db这类轻巧的db库，或者想发挥原生SQL优势，那么绝对值得一试。 
 
 
