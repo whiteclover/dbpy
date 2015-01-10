@@ -361,8 +361,8 @@ null condition
     # > WHERE  `name` IS NULL  
 
 
-and && or
-----------------
+complex conditions
+-------------------
 
 使用 db.and_(), db.or_() 可以构建and或or粘合的条件组合。
 
@@ -497,7 +497,7 @@ delete(table, key='default'):
     # > 2
 
 
-to_sql and __str__
+to_sql and str
 ---------------------
 
 ``db.insert``, ``db.update``,  ``db.delete`` 返回的对象都可以使用 to_sql 或者__str__ 来查看构建成的sql语句。
