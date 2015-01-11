@@ -13,16 +13,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from db.connection import Connection
+from db.errors import (
+        NotInstallDriverError,
+    )
+
 try:
     import MySQLdb
     from MySQLdb.cursors import DictCursor, Cursor
 except ImportError:
     raise NotInstallDriverError("Must install MySQLdb module fistly")
 
-from db.connection import Connection
-from db.errors import (
-        NotInstallDriverError,
-    )
+
 
 import time
 import logging
