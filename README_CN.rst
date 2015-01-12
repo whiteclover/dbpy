@@ -2,19 +2,18 @@ dbpy
 #####
 
 
-`The Help Documention (中文|chinese) <https://github.com/thomashuang/dbpy/blob/master/README_CN.rst>`_
+dbpy是一个python写的数据库CURD人性化api库。借鉴了 `webpy db <https://github.com/webpy/webpy>`_ 和 `drupal database <https://www.drupal.org/developing/api/database>`_ 的设计。 如果喜欢 tornado db 或者 webpy db这类轻巧的db库，或者想发挥原生SQL优势，那么值得一试。 
 
-
-dbpy is database abstration layer wrote by python. The desgin is inspired by `webpy db <https://github.com/webpy/webpy>`_ 和 `drupal database <https://www.drupal.org/developing/api/database>`_ . If like the simple db abstration layer like ``tornado db`` or ``webpy db``, it is worth to try.
 
 Featues
 ================
 
-#. silmple and flexible
-#. graceful and useful sql query builder.
-#. thread-safe connection pool
-#. supports read/write master-slave mode
-#. supports transaction
+#. 灵活简单
+#. 天马行空的SQL构建语法糖
+#. 线程安全的连接池
+#. 支持读写分离（当前限定只能是一主多副模式）
+#. 支持简单事务
+
 
 The Projects use dbpy
 ======================
@@ -27,40 +26,40 @@ The Projects use dbpy
 
 
 
-
 Install
 ==============
 
-Firstly download or fetch it form github then run the command in shell:
+从github上fork下来，终端执行下面命令:
 
 .. code-block:: bash
 
-    cd db # the path to the project
+    cd dbpy # the path to the project
     python setup.py install
+
+.. note:: 安装前先安装 ``MySQLdb`` (``MySQL-python``) 依赖python库
+
 
 Development
 ===========
 
-Fork or download it, then run:
+下载后终端执行:
 
 .. code-block:: bash 
 
-    cd db # the path to the project
+    cd dbpy # the path to the project
     python setup.py develop
-
 
 
 Compatibility
 =============
 
-Built and tested under Python 2.7 
-
+在 Python 2.7.x 测试开发
 
 DB API
 ========
 
+先提醒下模块使用单例模式。所以api相对比较好使。
 
-Have a look:
 
 .. code-block:: python
 
@@ -75,20 +74,17 @@ Have a look:
     db.setup(config，  minconn=5, maxconn=10,  
         adapter='mysql', key='defalut', slave=False)
 
-    db.execute('show tables')
-
 
 
 setup
 ---------
 
-:config: the connection basic config, the all of arguements of MySQLDB#connect is acceptable。 the ``max_idle`` is the connect timeout setting that is used to reconnection when connection is timeout, default is 10 seconds.
-:minconn: the minimum connections for the connection pool, default is 5.
-:maxconn: the maximum connections for the connection pool, defalut is 10.
-:adapter: the database driver adapter name, currently supports mysql only.
-:key: the database idenfify for database,  default database is "default"
-:slave: if set to true, the database will be register as a slave database. make sure you setup a master firstly.
-
+:config: 是数据库连接参数，可以传入MySQLDB#connect接口中所有的可选参数。 其中``max_idle`` 相对是mysql服务端 connect_timeout配置,默认10秒。
+:minconn: 为当前数据库连接池保持最小连接池，默认为5
+:maxconn: 为当前数据库连接池最大连接池，默认为10
+:adapter: 为适配器名，当前只支持 mysql
+:key: 是数据库的标识符,默认为 default
+:slave: 如果为true那么当前的数据库将会注册为读数据库。如果你没有做读写分离，只有一个数据库用来读写，那么setup一次就好，这样就可以读写。
 
 .. code-block:: python
 
@@ -102,33 +98,32 @@ setup
 
     db.setup(config， key='test')
     config['host'] = 'test.slave'
-    # set a slave, and now the master can only to write
+    # 这次setup将会把key标记为仅可写，就是在后面用api时，制定到当前key的数据库会做数据分离
     db.setup(config， key='test', slave=True) 
 
     config['host'] = 'test.slave2'
-    # add more slave for 'test'
+    # 再加入一个slave数据库
     db.setup(config， key='test', slave=True)
 
 
     config['host'] = 'host2'
     config['db'] = 'social'
-    # set another database
+    # 再加入一个数据库
     db.setup(config， key='social', slave=True)
 
 query
 -------
 
-
-
-query api is used for reading database operation, like select..., show tables, if you wanna update your database please use execute api.
+query用于raw sql的查询语言。如果有更新数据请用execute.
 
 query(sql, args=None, many=None, as_dict=False, key='default'):
 
-:sql: the raw sql
-:args: the args for sql arguement to prepare execute.
-:many: when set to a greater zero integer, it will use fetchmany then yield return a generator, otherwise a list.
-:as_dict: when set to true, query api will return the database result as dict row, otherwise tuple row.
-:key: the idenfify of database.
+:sql: mysql的格式化raw sql
+:args: 可以为元组和list，是sql格式化预处理的输入
+:many: 如果指定为大于零的整数将会使用fetchmany语句，并返回对象将会是迭代器.否则api调用fetchall返回结果.
+:as_dict: 如果为 true将会返回字典行，否则返回元组行。
+:key: 用于指定使用那个数据库。
+
 
 .. code-block:: python
 
@@ -159,19 +154,17 @@ query(sql, args=None, many=None, as_dict=False, key='default'):
 execute
 --------
 
-the api is used for writing database operation, like insert, update, delete.. if you wanna read query your database please use query api.
-
+execute用于raw sql的更新语言。
 execute(sql, args=None, key='default'):
 
 
-:sql: the raw sql
-:args: the args for sql arguement to prepare execute.
-:key: the idenfify of database.
+:sql: mysql的格式化raw sql
+:args: 可以为元组和list，是sql格式化预处理的输入.如下面例子insert语句values有多个插入时，调用 ``executemany``
+:key: 用于指定使用那个数据库。
 
+返回规范::
 
-Return::
-
-  it returns last_insert_id when sql is insert statement, otherwise rowcount
+   对于insert 将会返回 last_insert_id, 其他更新语句返回rowcount
 
 .. code-block:: python
     
@@ -181,7 +174,7 @@ Return::
             `name` varchar(20) NOT NULL,
             PRIMARY KEY (`uid`))""")
     
-    # when inset mutil-values，the api will call executemany
+    # insert语句插入多个value，注意这样写将会调用executemany，你懂的，就是封装了多条execute的玩意
     db.execute('INSERT INTO users VALUES(%s, %s)', [(10, 'execute_test'), (9, 'execute_test')])
     # > 9
     db.execute('DELETE FROM users WHERE name=%s', ('execute_test',))
@@ -195,12 +188,12 @@ Return::
 select
 -----------
 
-the api is used for select sql database query.
+select用于构建select 查询语言。
 
 select(table, key='default'):
 
-:table: the table name
-:key: the idenfify of database 
+:table: 选定表
+:key: 用于指定使用那个数据库。
 
 select all
 ~~~~~~~~~~~~~~~~
@@ -222,12 +215,12 @@ specific columns
 execute
 ~~~~~~~~~~~~~~~~
 
-when you already build your sql, try execute api to fetch your database result.
+在构建好查询条语句后使用execute api可以返回结果。
 
 execute(many=None, as_dict=False):
 
-:many: when set to a greater zero integer, it will use fetchmany then yield return a generator, otherwise a list.
-:as_dict: when set to true, query api will return the database result as dict row, otherwise tuple row.
+:many: 如果指定为大于零的整数将会使用fetchmany语句，并返回对象将会是迭代器.否则api调用fetchall返回结果.
+:as_dict: 如果为 true将会返回字典行，否则返回元组行。
 
 .. code-block:: python
 
@@ -246,14 +239,16 @@ execute(many=None, as_dict=False):
 Condition
 ~~~~~~~~~~~
 
-It is time to try more complex select query.
+上面已经学会如何做简单的查询，那么如何组件条件查询。这里将会重点讲述condition方法如何构建各种查询条件。
 
 condition(field, value=None, operator=None):
 
-:field: the field of table 
-:value: the value of field, defaul is None ("field is null")
-:operator: the where operator like BETWEEN, IN, NOT IN, EXISTS, NOT EXISTS, IS NULL, IS NOT NULL, LIKE, NOT LIKE, =, <, >, >=, <=, <> and so on.
+:field: 是条件限制的表字段
+:value: 是字段的条件值， 如果炸路额， operator都不指定就是 "field is null"
+:operator: 默认可能是等于操作符号， 可选的操作符号有 BETWEEN, IN, NOT IN, EXISTS, NOT EXISTS, IS NULL, IS NOT NULL, LIKE, NOT LIKE, =, <, >, >=, <=, <>等
 
+
+在所有的select，update, delete查询中多个默认的condition将会是and条件组合。
 
 simple 
 ^^^^^^^^^^^^^^^^
@@ -379,7 +374,7 @@ null condition
 complex conditions
 -------------------
 
-using db.and_(), db.or_(), we can build complex where conditions:
+使用 db.and_(), db.or_() 可以构建and或or粘合的条件组合。
 
 .. code-block:: python
 
@@ -393,7 +388,7 @@ using db.and_(), db.or_(), we can build complex where conditions:
 expr
 ------------
 
-if you wanna use the aggregate functions like sum, count, please use ``erpr`` :
+如果你需要使用 count sum之类的集聚函数，那么使用 Expr构建字段吧。
 
 .. code-block:: python
 
@@ -410,12 +405,13 @@ if you wanna use the aggregate functions like sum, count, please use ``erpr`` :
 insert
 -----------
 
-The ``insert`` api is used for building insert into sql statement.
+insert用于构建insert into的sql语句。
 
 insert(table, key='default'):
 
-:table: the table name
-:key: the idenfify of database 
+:table: 选定表
+:key: 用于指定使用那个数据库。
+
 
 .. code-block:: python
 
@@ -430,8 +426,7 @@ insert(table, key='default'):
     print q._values
     # > [('insert_1',), ('insert_2',)]
 
-
-When you use ``execute`` api to get result, it will reutrn the ``last insert id``：
+构建好执行execute会执行数据库插入,execute返回的是last insert id：
 
 .. code-block:: python
     
@@ -444,20 +439,19 @@ When you use ``execute`` api to get result, it will reutrn the ``last insert id`
 update
 -----------
 
-The ``update`` api is used for building update sql statement.
+update用于构建update的sql语句
 
 update(table, key='default'):
 
-:table: the table name
-:key: the idenfify of database 
+:table: 选定表
+:key: 用于指定使用那个数据库。
 
+update 主要可用的方法是mset和set， mset：
 
-mset and set：
+:mset: 传入的是字典，用于一次set多个表属性
+:set(column, value): 只能设置一个属性，可以多次使用 
 
-:mset: the value must be dict tpye, that sets mutil-fileds at once time.
-:set(column, value): set one field one time.
-
-the where conditions please see `select`_ for more information.
+构建条件codition前面已经讲述了。请参考 `select`_
 
 
 .. code-block:: python
@@ -471,10 +465,8 @@ the where conditions please see `select`_ for more information.
     print q.to_sql()
     # > UPDATE `users` SET `name` = %s, `uid` = %s WHERE  `name` = %s AND `uid` = %s 
   
-
-
-When you use ``execute`` api to get result, it will reutrn the ``rowcount``：
-
+	
+构建好执行execute会执行数据库插入,execute返回的是更新的 rowcount：
 
 .. code-block:: python
     
@@ -485,9 +477,7 @@ When you use ``execute`` api to get result, it will reutrn the ``rowcount``：
 limit
 ~~~~~~~~~
 
-
-
-You can use limit api to lim the quantity of update.
+因为你可能希望限制更新几条。那么可以使用limit
 
 
 .. code-block:: python
@@ -499,21 +489,21 @@ delete
 -----------
 
 
-The ``delete`` api is used for building DELETE FROM sql statement.
+delete 用于构建delete from的sql语句。
 
 delete(table, key='default'):
 
-:table: the table name
-:key: the idenfify of database 
+:table: 选定表
+:key: 用于指定使用那个数据库。
 
-the where conditions please see `select`_ for more information.
+构建条件codition前面已经讲述了。请参考 `select`_
 
 .. code-block:: python
     
     db.delete('users').condition('name','user_1')
     # > DELETE FROM `users` WHERE  `name` = %s 
 	
-When you use ``execute`` api to get result, it will reutrn the ``rowcount``：
+构建好执行execute会执行数据库插入,execute返回的是删除的 rowcount：
 
 .. code-block:: python
     
@@ -525,7 +515,7 @@ When you use ``execute`` api to get result, it will reutrn the ``rowcount``：
 to_sql and str
 ---------------------
 
-you can use to_sql or __str__ method to the objects of  ``select``, ``insert``, ``update``, ``delete`` to print the sql you build.
+``db.insert``, ``db.update``,  ``db.delete`` 返回的对象都可以使用 to_sql 或者__str__ 来查看构建成的sql语句。
 
 
 .. code-block:: python
@@ -543,11 +533,10 @@ transaction
 
 transaction(table, key='default'):
 
-:table: the table name
-:key: the idenfify of database 
+:table: 选定表
+:key: 用于指定使用那个数据库。
 
-
-The simple transaction done all or do nothing, you cann't set savepoint. 
+对于事务，这里比较简单的实现。要么全部执行，要么全部不做，没有做保存点。
 
 
 
@@ -561,23 +550,23 @@ The simple transaction done all or do nothing, you cann't set savepoint.
             .condition('name','user_1').execute())
 
 
-    # the normal way
+    # 普通用法
     t = db.transaction()
     t.begin()
     t.delete('users').condition('uid', 1).execute()
     (t.update('users').mset({'name':None, 'uid' : 12})
         .condition('name','user_1').execute())
 
-    #if failed will rollback
+    #这里将会提交，如果失败将会rollback
     t.commit()
 
-.. note:: when uses begin must be combine with commit，otherwise the connection will not return connection pool.suggets to use ``with context``
+.. note:: 使用 begin一定要结合commit方法，不然可能连接不会返还连接池。建议用 ``with`` 语句。
 
 
 simple orm
 -----------
 
-the orm demo  `samples <https://github.com/thomashuang/dbpy/blob/master/samples>`_
+这里将会讲述最简单的orm构建技巧， 详细参考 `samples <https://github.com/thomashuang/dbpy/blob/master/samples>`_
 
 .. code-block:: python
     
@@ -614,13 +603,17 @@ the orm demo  `samples <https://github.com/thomashuang/dbpy/blob/master/samples>
 Future
 --------
 
+当前只支持mysql适配驱动，因为个人并不熟悉其他关联数据库，dbpy的设计比较灵活，所以如果有高手可以尝试写写其他数据库适配，仿照 `db/mysql目录 <https://github.com/thomashuang/dbpy/blob/master/db/mysql>`_ 如果写pgsql的适配应该不会多余800行代码。
 
-Personal idea:
 
-#. add ``join``  for select api 
-#. add a schema class for creating or changing table.
-#. add some api for mysql individual sql like ``replace`` or ``duplicate update``
-#. improve connection pool.
+对于构建orm框架方面，从个人来讲，更喜欢原生SQL，也不打算再造一个orm轮子。从设计和实现来说，dbpy是为了更好的发挥原生SQL优势和简单灵活。
+
+个人一些想法：
+
+#. 为select加入join构建方法糖。
+#. 尝试完成schema类，用于创建表，修改表结构等。
+#. 加入一些mysql特有的sql方法糖，比如replace， on dup更新等。
+#. 优化改进连接池，比如加入固定数量连接的连接池。
 
 
 LICENSE
