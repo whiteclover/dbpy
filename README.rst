@@ -2,7 +2,7 @@ dbpy
 #####
 
 
-`The Help Documention (中文|chinese) <https://github.com/thomashuang/dbpy/blob/master/README_CN.rst>`_
+`(中文|chinese) <https://github.com/thomashuang/dbpy/blob/master/README_CN.rst>`_
 
 
 dbpy is database abstration layer wrote by python. The desgin is inspired by `webpy db <https://github.com/webpy/webpy>`_ 和 `drupal database <https://www.drupal.org/developing/api/database>`_ . If like the simple db abstration layer like ``tornado db`` or ``webpy db``, it is worth to try.
