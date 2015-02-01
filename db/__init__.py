@@ -69,7 +69,7 @@ def setup(config,  minconn=5, maxconn=10,  adapter='mysql', key='default', slave
         __db[master_key] = database
         if slave_key not in __db:
             __db[slave_key] = [database]
-    else:  
+    else:
         if key in __db:
             databases = __db[slave_key]
             if len(databases) == 1 and __db[master_key] == databases[0]:
@@ -84,7 +84,7 @@ def query(sql, args=None, many=None, as_dict=False, key='default'):
         to fetch records, it is compatible the dbi execute method::
 
     args::
-    
+
     sql string: the sql stamtement like 'select * from %s'
     args maybe list: Wen set None, will use dbi execute(sql), else
         dbi execute(sql, args), the args keep the original rules, it shuld be tuple or list of list
@@ -98,7 +98,7 @@ def query(sql, args=None, many=None, as_dict=False, key='default'):
 
 def execute(sql, args=None, key='default'):
     """It is used for update, delete records::
-        
+
         execute('insert into users values(%s, %s)', [(1L, 'blablabla'), (2L, 'animer')])
         execute('delete from users')
     """

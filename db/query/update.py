@@ -28,7 +28,7 @@ class UpdateQuery(WhereQuery):
     def table(self, table):
         self._table = table
         return self
-        
+
     def execute(self):
         return self._db.execute(self.to_sql(), self.bind)
 

@@ -37,7 +37,7 @@ class MySQLConnection(Connection):
     def initialize(self):
         self._last_used = time.time()
         self._max_idle = self._db_options.pop('max_idle', 10)
-        
+
     def default_options(self):
         return {
             'port': 3306,

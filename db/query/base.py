@@ -23,7 +23,7 @@ class Query(object):
 
     def __del__(self):
         self.close()
-        
+
     def connect(self):
         pass
 

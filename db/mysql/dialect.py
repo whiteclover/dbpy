@@ -16,6 +16,6 @@
 from db.dialect import Dialect
 
 class MySQLDialect(Dialect):
-    
+
     def initialize(self):
         self._identifier = '`'

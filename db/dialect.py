@@ -24,7 +24,7 @@ class Dialect(object):
 
     def __init__(self, db=None):
         self._identifier = '"'
-        self.db = db 
+        self.db = db
         self.initialize()
 
     def initialize(self):
@@ -143,7 +143,7 @@ class Dialect(object):
                 value = self._identifier + value + self._identifier
         if alias:
             value += ' AS ' + self._identifier + alias + self._identifier
-            
+
         return value
 
     def map_condition_operator(self, operator):

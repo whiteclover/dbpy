@@ -20,7 +20,7 @@ class Expr(object):
         self.alias = alias
 
     def compile(self, db):
-        sql  = self.expression 
+        sql  = self.expression
         if self.alias:
             sql += (' AS ' + db.quote_column(self.alias))
         return sql

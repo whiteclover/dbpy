@@ -22,7 +22,7 @@ from db.pool import ConnectionPool
 LOGGER = logging.getLogger('db')
 
 class DB(object):
-    
+
     adapters = {}
     dialects = {}
 
@@ -67,9 +67,9 @@ class DB(object):
         """
         con = self.pool.pop()
         c = None
-        try: 
+        try:
             c = con.cursor(as_dict)
-            LOGGER.debug("sql: " + sql + " args:" + str(args))
+            LOGGER.debug("Query sql: " + sql + " args:" + str(args))
             c.execute(sql, args)
             if many and many > 0:
                 return self._yield(con, c, many)
@@ -96,7 +96,7 @@ class DB(object):
 
     def execute(self, sql, args=None):
         """It is used for update, delete records::
-        
+
             execute('insert into users values(%s, %s)', [(1L, 'blablabla'), (2L, 'animer')])
             execute('delete from users')
         """
@@ -104,7 +104,7 @@ class DB(object):
         c = None
         try:
             c = con.cursor()
-            LOGGER.debug("execute sql: " + sql + " args:" + str(args))
+            LOGGER.debug("Execute sql: " + sql + " args:" + str(args))
             if type(args) is tuple:
                 c.execute(sql, args)
             elif type(args) is list:
@@ -198,7 +198,7 @@ class Transaction(object):
         self._con.ensure_connect()
         self._con.autocommit(False)
         return self
-        
+
     def __exit__(self, exc_type, exc_value, traceback):
         try:
             self._con.commit()
