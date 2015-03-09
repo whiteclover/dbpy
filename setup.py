@@ -9,7 +9,7 @@ setup(
     author_email='lyanghwy@gmail.com',
     description = "database abstraction layer for pythoneer",
     license = "GPL",
-    keywords = "datbase abstraction layer for pythoneer(orm, database)",
+    keywords = "database abstraction layer for pythoneer(orm, database)",
     url='https://github.com/thomashuang/dbpy',
     long_description=open('README.rst').read(),
     packages=find_packages(exclude=['samples', 'tests*']),
