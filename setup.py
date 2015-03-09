@@ -3,26 +3,27 @@ import sys
 from db import __version__
 
 setup(
-    name = 'db',
+    name = 'dbpy',
     version = __version__,
     author = "Thomas Huang",
     author_email='lyanghwy@gmail.com',
-    description = "db abstraction layer for pythoner",
+    description = "database abstraction layer for pythoneer",
     license = "GPL",
-    keywords = "db abstraction layer for pythoner",
+    keywords = "datbase abstraction layer for pythoneer(orm, database)",
     url='https://github.com/thomashuang/dbpy',
     long_description=open('README.rst').read(),
-    packages=find_packages(),
+    packages=find_packages(exclude=['samples', 'tests*']),
     zip_safe=False,
     include_package_data=True,
     install_requires = ['setuptools',  'MySQL-python'],
     test_suite='unittests',
     classifiers=(
-        "Development Status :: Production/Alpha",
-        "License :: GPL",
+        "Development Status :: 3 - Alpha",
+        "License :: OSI Approved :: GNU Affero General Public License v3",
         "Natural Language :: English",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
-        "Topic :: Scheduler"
+        "Operating System :: OS Independent",
+        "Topic :: Database"
         )
     )

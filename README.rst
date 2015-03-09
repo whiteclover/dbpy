@@ -73,7 +73,7 @@ Have a look:
             'max_idle' : 5*60
         }
 
-    db.setup(config，  minconn=5, maxconn=10,  
+    db.setup(config,  minconn=5, maxconn=10,  
         adapter='mysql', key='defalut', slave=False)
 
     db.execute('show tables')
@@ -101,20 +101,20 @@ setup
             'max_idle' : 5*60
         }
 
-    db.setup(config， key='test')
+    db.setup(config, key='test')
     config['host'] = 'test.slave'
     # set a slave, and now the master can only to write
-    db.setup(config， key='test', slave=True) 
+    db.setup(config, key='test', slave=True) 
 
     config['host'] = 'test.slave2'
     # add more slave for 'test'
-    db.setup(config， key='test', slave=True)
+    db.setup(config, key='test', slave=True)
 
 
     config['host'] = 'host2'
     config['db'] = 'social'
     # set another database
-    db.setup(config， key='social', slave=True)
+    db.setup(config, key='social', slave=True)
 
 query
 -------

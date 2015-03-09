@@ -1,0 +1,14 @@
+Celery Flower
+=============
+
+Version 0.1
+-----------
+
+Released on March 09 2015
+
+
+- silmple and flexible
+- graceful and useful sql query builder.
+- thread-safe connection pool
+- supports read/write master-slave mode
+- supports transaction
