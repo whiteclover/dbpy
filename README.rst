@@ -34,13 +34,10 @@ Install
 
 Install the extension with the following command::
 
-.. code-block:: bash
-
     $ easy_install dbpy
 
 or alternatively if you have pip installed::
 
-.. code-block:: bash
 
     $ pip install dbpy
 

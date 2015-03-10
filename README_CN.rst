@@ -33,13 +33,10 @@ Install
 
 使用easy_install安装::
 
-.. code-block:: bash
-
     $ easy_install dbpy
 
 或者使用pip下载安装::
 
-.. code-block:: bash
 
     $ pip install dbpy
 
