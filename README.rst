@@ -32,7 +32,20 @@ The Projects use dbpy
 Install
 ==============
 
-Firstly download or fetch it form github then run the command in shell:
+Install the extension with the following command::
+
+.. code-block:: bash
+
+    $ easy_install dbpy
+
+or alternatively if you have pip installed::
+
+.. code-block:: bash
+
+    $ pip install dbpy
+
+
+or clone it form github then run the command in shell:
 
 .. code-block:: bash
 

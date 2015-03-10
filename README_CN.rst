@@ -29,6 +29,21 @@ The Projects use dbpy
 Install
 ==============
 
+
+
+使用easy_install安装::
+
+.. code-block:: bash
+
+    $ easy_install dbpy
+
+或者使用pip下载安装::
+
+.. code-block:: bash
+
+    $ pip install dbpy
+
+
 从github上fork下来，终端执行下面命令:
 
 .. code-block:: bash
