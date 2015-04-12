@@ -93,8 +93,8 @@ class ConnectionPool(BaseConnectionPool):
                 conn.close()
             for conn in self._in_use_conns:
                 conn.close()
-            self._available_conns = []
-            self._in_use_conns = []
+            self._available_conns[:] = []
+            self._in_use_conns[:] = []
             self._created_conns = 0
 
 
