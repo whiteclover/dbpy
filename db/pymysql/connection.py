@@ -30,7 +30,7 @@ except ImportError:
 import time
 import logging
 
-LOGGER = logging.getLogger('db.mysql')
+LOGGER = logging.getLogger('db.pymysql')
 
 
 class PyMySQLConnection(Connection):
