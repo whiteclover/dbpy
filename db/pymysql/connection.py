@@ -21,7 +21,7 @@ from db.errors import (
 try:
     import pymysql
     pymysql.install_as_MySQLdb()
-    from MySQLdb.cursors import DictCursor, Cursor
+    from pymysql.cursors import DictCursor, Cursor
 except ImportError:
     raise NotInstallDriverError("Must install pymysql module fistly")
 
