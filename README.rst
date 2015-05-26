@@ -8,6 +8,22 @@ dbpy is database abstration layer wrote by python. The design is inspired by `we
 
 `中文|chinese <https://github.com/thomashuang/dbpy/blob/master/README_CN.rst>`_
 
+changes
+==========
+
+#. Add pymysql adapter
+
+
+
+Install the extension with the following command::
+
+    $ easy_install pymysql
+
+or alternatively if you have pip installed::
+
+
+    $ pip install pymysql
+
 Featues
 ================
 
@@ -96,7 +112,7 @@ setup
 :config: the connection basic config, the all of arguements of MySQLDB#connect is acceptable。 the ``max_idle`` is the connect timeout setting that is used to reconnection when connection is timeout, default is 10 seconds.
 :minconn: the minimum connections for the connection pool, default is 5.
 :maxconn: the maximum connections for the connection pool, defalut is 10.
-:adapter: the database driver adapter name, currently supports mysql only.
+:adapter: the database driver adapter name, currently supports mysql (MySQLdb, pymysql) only.
 :key: the database idenfify for database,  default database is "default"
 :slave: if set to true, the database will be register as a slave database. make sure you setup a master firstly.
 
