@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 VERSION = tuple(map(int, __version__.split('.')))
 
 
@@ -52,6 +52,17 @@ __db = {}
 
 
 def setup(config,  minconn=5, maxconn=10,  adapter='mysql', key='default', slave=False):
+    """Setup database
+
+    :param config dict: is the db adapter config
+    :param key string: the key to identify dabtabase
+    :param adapter string: the dabtabase adapter current support mysql only
+    :param minconn int: the min connection for connection pool
+    :param maxconn int: the max connection for connection pool
+    :param slave boolean: If True the database can be read only.
+
+
+    """
     global __db
 
     if '.' in key:
@@ -84,21 +95,27 @@ def query(sql, args=None, many=None, as_dict=False, key='default'):
     """The connection raw sql query,  when select table,  show table
         to fetch records, it is compatible the dbi execute method::
 
-    args::
 
-    sql string: the sql stamtement like 'select * from %s'
-    args maybe list: Wen set None, will use dbi execute(sql), else
+    :param sql string: the sql stamtement like 'select * from %s'
+    :param args  list: Wen set None, will use dbi execute(sql), else
         dbi execute(sql, args), the args keep the original rules, it shuld be tuple or list of list
-    many maybe int: when set, the query method will return genarate an iterate
-    as_dict bool: when is true, the type of row will be dict, otherwise is tuple
-    key: a key for your dabtabase you wanna use
+    :param many  int: when set, the query method will return genarate an iterate
+    :param as_dict bool: when is True, the type of row will be dict, otherwise is tuple
+    :param key: a key for your dabtabase you wanna use
     """
     database = choice(__db[key + '.slave'])
     return database.query(sql, args, many, as_dict)
 
 
 def execute(sql, args=None, key='default'):
-    """It is used for update, delete records::
+    """It is used for update, delete records.
+
+    :param sql string: the sql stamtement like 'select * from %s'
+    :param args  list: Wen set None, will use dbi execute(sql), else
+            dbi execute(sql, args), the args keep the original rules, it shuld be tuple or list of list
+    :param key: a key for your dabtabase you wanna use
+
+    eg::
 
         execute('insert into users values(%s, %s)', [(1L, 'blablabla'), (2L, 'animer')])
         execute('delete from users')
@@ -108,31 +125,57 @@ def execute(sql, args=None, key='default'):
 
 
 def transaction(key='default'):
+    """transaction wrapper
+
+    :param key: a key for your dabtabase you wanna use
+    """
     database = __db[key]
     return database.transaction()
 
 
 def select(table, key='default'):
+    """Select dialect
+
+
+    :param key: a key for your dabtabase you wanna use
+    """
     database = choice(__db[key + '.slave'])
     return database.select(table)
 
 
 def insert(table, key='default'):
+    """insert  dialect
+
+    :param key: a key for your dabtabase you wanna use
+    """
     database = __db[key]
     return database.insert(table)
 
 
 def update(table, key='default'):
+    """update dialect
+
+    :param key: a key for your dabtabase you wanna use
+    """
     database = __db[key]
     return database.update(table)
 
 
 def delete(table, key='default'):
+    """delete  dialect
+
+    :param key: a key for your dabtabase you wanna use
+    """
     database = __db[key]
     return database.delete(table)
 
 
 def database(key='default', slave=False):
+    """datbase dialect
+
+    :param key: a key for your dabtabase you wanna use
+    :param slave boolean: If True the database can be read only, Defaults False.
+    """
     if slave:
         key += '.slave'
         return choice(__db[key])

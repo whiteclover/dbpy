@@ -80,7 +80,7 @@ Fork or download it, then run:
 Compatibility
 =============
 
-Built and tested under Python 2.7 
+Built and tested under Python 2.7+
 
 
 DB API
@@ -100,7 +100,7 @@ Have a look:
         }
 
     db.setup(config,  minconn=5, maxconn=10,  
-        adapter='mysql', key='defalut', slave=False)
+        adapter='mysql', key='default', slave=False)
 
     db.execute('show tables')
 
@@ -111,7 +111,7 @@ setup
 
 :config: the connection basic config, the all of arguements of MySQLDB#connect is acceptable。 the ``max_idle`` is the connect timeout setting that is used to reconnection when connection is timeout, default is 10 seconds.
 :minconn: the minimum connections for the connection pool, default is 5.
-:maxconn: the maximum connections for the connection pool, defalut is 10.
+:maxconn: the maximum connections for the connection pool, default is 10.
 :adapter: the database driver adapter name, currently supports mysql (MySQLdb, pymysql) only.
 :key: the database idenfify for database,  default database is "default"
 :slave: if set to true, the database will be register as a slave database. make sure you setup a master firstly.

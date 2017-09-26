@@ -65,7 +65,7 @@ Development
 Compatibility
 =============
 
-在 Python 2.7.x 测试开发
+在 Python 2.7+ 测试开发
 
 DB API
 ========
@@ -84,7 +84,7 @@ DB API
         }
 
     db.setup(config，  minconn=5, maxconn=10,  
-        adapter='mysql', key='defalut', slave=False)
+        adapter='mysql', key='default', slave=False)
 
 
 
@@ -94,7 +94,7 @@ setup
 :config: 是数据库连接参数，可以传入MySQLDB#connect接口中所有的可选参数。 其中``max_idle`` 相对是mysql服务端 connect_timeout配置,默认10秒。
 :minconn: 为当前数据库连接池保持最小连接池，默认为5
 :maxconn: 为当前数据库连接池最大连接池，默认为10
-:adapter: 为适配器名，当前只支持 mysql
+:adapter: 为适配器名，当前支持 mysql和pymsql
 :key: 是数据库的标识符,默认为 default
 :slave: 如果为true那么当前的数据库将会注册为读数据库。如果你没有做读写分离，只有一个数据库用来读写，那么setup一次就好，这样就可以读写。
 
