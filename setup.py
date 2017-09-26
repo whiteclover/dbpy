@@ -3,19 +3,18 @@ import sys
 from db import __version__
 
 setup(
-    name = 'dbpy',
-    version = __version__,
-    author = "Thomas Huang",
+    name='dbpy',
+    version=__version__,
+    author="Thomas Huang",
     author_email='lyanghwy@gmail.com',
-    description = "database abstraction layer for pythoneer",
-    license = "GPL",
-    keywords = "database abstraction layer for pythoneer(orm, database)",
+    description="database abstraction layer for pythoneer",
+    license="GPL",
+    keywords="database abstraction layer for pythoneer(orm, database)",
     url='https://github.com/thomashuang/dbpy',
-    long_description=open('README.rst').read(),
     packages=find_packages(exclude=['samples', 'tests*']),
     zip_safe=False,
     include_package_data=True,
-    install_requires = ['setuptools',  'MySQL-python'],
+    install_requires=['setuptools'],
     test_suite='unittests',
     classifiers=(
         "Development Status :: 3 - Alpha",
@@ -25,5 +24,5 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Operating System :: OS Independent",
         "Topic :: Database"
-        )
     )
+)

@@ -17,7 +17,6 @@ __version__ = '0.1.2'
 VERSION = tuple(map(int, __version__.split('.')))
 
 
-
 __all__ = [
     'and_',
     'or_',
@@ -40,6 +39,7 @@ from db._db import DB
 from db.errors import DBError
 from random import choice
 
+
 def and_():
     return QueryCondition('AND')
 
@@ -55,10 +55,10 @@ def setup(config,  minconn=5, maxconn=10,  adapter='mysql', key='default', slave
     global __db
 
     if '.' in key:
-        raise TypeError('The DB Key: "%s" Can\'t Contain dot' %(key))
+        raise TypeError('The DB Key: "%s" Can\'t Contain dot' % (key))
 
     if slave == False and key in __db:
-        raise DBError('The Key: "%s" was set' %(key))
+        raise DBError('The Key: "%s" was set' % (key))
 
     database = DB(config, minconn, maxconn, key, adapter)
 
@@ -78,6 +78,7 @@ def setup(config,  minconn=5, maxconn=10,  adapter='mysql', key='default', slave
                 __db[slave_key].append(database)
         else:
             __db[slave_key] = [database]
+
 
 def query(sql, args=None, many=None, as_dict=False, key='default'):
     """The connection raw sql query,  when select table,  show table
@@ -112,7 +113,7 @@ def transaction(key='default'):
 
 
 def select(table, key='default'):
-    database = choice(__db[key+'.slave'])
+    database = choice(__db[key + '.slave'])
     return database.select(table)
 
 

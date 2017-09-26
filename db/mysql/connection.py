@@ -15,15 +15,14 @@
 
 from db.connection import Connection
 from db.errors import (
-        NotInstallDriverError,
-    )
+    NotInstallDriverError,
+)
 
 try:
     import MySQLdb
     from MySQLdb.cursors import DictCursor, Cursor
 except ImportError:
     raise NotInstallDriverError("Must install MySQLdb module fistly")
-
 
 
 import time
@@ -69,7 +68,3 @@ class MySQLConnection(Connection):
 
     def driver(self):
         return 'mysql'
-
-
-
-

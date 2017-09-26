@@ -17,7 +17,6 @@ from hashlib import sha224
 from datetime import datetime
 
 
-
 class User(object):
 
     def __init__(self, username, email, real_name, password, bio, status, role='user', uid=None):
@@ -56,11 +55,10 @@ class User(object):
         return data
 
 
-
 class Post(object):
 
-    def __init__(self, title, slug, description, html, css, js, category, status, 
-        comments, author=None, created=datetime.now(), pid=None):
+    def __init__(self, title, slug, description, html, css, js, category, status,
+                 comments, author=None, created=datetime.now(), pid=None):
         self.title = title
         self.slug = slug
         self.description = description
@@ -74,7 +72,6 @@ class Post(object):
         self.author = author
         self.created = created
         self.pid = pid
-
 
     def as_json(self):
         data = self.__dict__.copy()

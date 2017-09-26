@@ -15,47 +15,67 @@
 
 
 class Connection(object):
+    """Base Database Connection class
 
-    def __init__(self, db_options={}):
+    :param db_options: db optional configuration, defaults to None
+    :type db_options: dict, optional
+    """
+
+    def __init__(self, db_options=None):
+        db_options = db_options or {}
+
+        #: database optional configuration, defaults to None
         self._db_options = self.default_options()
         self._db_options.update(db_options)
+
+        #: database real connection
         self._connect = None
         self.initialize()
-        
+
     def initialize(self):
-        """Initialize Custom config in your Subclass"""
+        """Initialize customize configuration in  subclass"""
         pass
 
     def default_options(self):
+        """Defalut options for intailize sql connection"""
         return {}
 
     def connect(self):
-        raise NotImplemented('Must implement connect in Subclass')
+        """connects database"""
+        raise NotImplementedError('Must implement connect in Subclass')
 
     def close(self):
+        """Close connect"""
         if self._connect is not None:
             self._connect.close()
             self._connect = None
 
     def ensure_connect(self):
-        raise NotImplemented('Must implement ensure_connect in Subclass')
+        """Ensure the connetion is useable"""
+        raise NotImplementedError('Must implement ensure_connect in Subclass')
 
     def cursor(self, as_dict=False):
+        """Gets the cursor by type ,  if ``as_dict is ture, make a dict  sql connection cursor"""
         self.ensure_connect()
         ctype = self.real_ctype(as_dict)
         return self._connect.cursor(ctype)
 
     def real_ctype(self, as_dict):
-        raise NotImplemented('Must implement real_ctype in Subclass')
+        """The real sql cursor type"""
+        raise NotImplementedError('Must implement real_ctype in Subclass')
 
     def driver(self):
-        return  None
+        """Get database driver"""
+        return None
 
     def commit(self):
+        """Commit batch execute"""
         self._connect.commit()
 
     def rollback(self):
+        """Rollback database process"""
         self._connect.rollback()
 
     def autocommit(self, enable=True):
+        """Sets commit to auto if True"""
         self._connect.autocommit(enable)

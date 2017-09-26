@@ -15,19 +15,30 @@
 
 from db.query.select import WhereQuery
 
-class DeleteQuery(WhereQuery):
 
-    def __init__(self, table, dialect, db,):
+class DeleteQuery(WhereQuery):
+    """Delete operator query builder"""
+
+    def __init__(self, table, dialect, db):
+        """Constructor
+
+        :param table:  table name
+        :type table: str
+        :param dialect: the sql dialect instance
+        :param db: the database connection instance
+        """
         if table:
             self._table = table
         self._db = db
         WhereQuery.__init__(self, dialect)
 
     def table(self, table):
+        """Sets table name"""
         self._table = table
         return self
 
     def compile(self):
+        """Compiles the delete sql statement"""
         sql = ''
         sql += 'DELETE FROM ' + self.dialect.quote_table(self._table)
         if self._where:
@@ -40,10 +51,12 @@ class DeleteQuery(WhereQuery):
         return sql
 
     def clear(self):
+        """Clear and reset to orignal state"""
         WhereQuery.clear(self)
         self._table = None
         self._parameters = []
         self._sql = None
 
     def execute(self):
+        """Execute the sql for delete operator"""
         return self._db.execute(self.to_sql(), self.bind)

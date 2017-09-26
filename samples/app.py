@@ -18,26 +18,26 @@ import model
 from orm import Backend
 import db
 
-db.setup({ 'host': 'localhost', 'user': 'test', 'passwd': 'test', 'db': 'blog'})
+db.setup({'host': 'localhost', 'user': 'test', 'passwd': 'test', 'db': 'blog'})
 
 
 user = Backend('user').find_by_username('username')
 if user and user.check('password'):
-	print 'auth'
+    print('auth')
 
 user = model.User('username', 'email', 'real_name', 'password', 'bio', 'status', 'role')
 if Backend('user').create(user):
-	print 'fine'
+    print('fine')
 
 user = Backend('user').find(12)
 user.real_name = 'blablabla....'
 if Backend('user').save(user):
-	print 'user saved'
+    print('user saved')
 
 if Backend('user').delete(user):
-	print 'delete user failed'
+    print('delete user failed')
 
 
 post = model.Post('title', 'slug', 'description', 'html', 'css', 'js', 'category', 'status', 'comments', 'author')
 if not Backend('post').create(post):
-	print 'created failed'
+    print('created failed')

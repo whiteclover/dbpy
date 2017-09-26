@@ -20,6 +20,7 @@ from model import User, Post
 
 logger = logging.getLogger(__name__)
 
+
 class BaseMapper(object):
 
     def load(self, data, o):
@@ -37,7 +38,6 @@ class PrimaryTrait(object):
             return self.load(data[0], self.model)
 
 
-
 class UserMapper(BaseMapper,  PrimaryTrait):
 
     model = User
@@ -46,7 +46,7 @@ class UserMapper(BaseMapper,  PrimaryTrait):
     def find(self, uid):
         """Find and load the user from database by uid(user id)"""
         data = (db.select(self.table).select('username', 'email', 'real_name',
-                'password', 'bio', 'status', 'role', 'uid').
+                                             'password', 'bio', 'status', 'role', 'uid').
                 condition('uid', uid).execute()
                 )
         if data:
@@ -56,7 +56,7 @@ class UserMapper(BaseMapper,  PrimaryTrait):
     def find_by_username(self, username):
         """Return user by username if find in database otherwise None"""
         data = (db.select(self.table).select('username', 'email', 'real_name',
-                'password', 'bio', 'status', 'role', 'uid').
+                                             'password', 'bio', 'status', 'role', 'uid').
                 condition('username', username).execute()
                 )
         if data:
@@ -87,26 +87,26 @@ class UserMapper(BaseMapper,  PrimaryTrait):
                                          'password', 'bio', 'status', 'role', 'uid')
         results = q.limit(perpage).offset((page - 1) * perpage).order_by('real_name', 'desc').execute()
         return [self.load(user, self.model) for user in results]
-        
 
     def save(self, user):
         q = db.update(self.table)
-        data = dict( (_, getattr(user, _)) for _ in ('username', 'email', 'real_name',
-                'password', 'bio', 'status', 'role'))
+        data = dict((_, getattr(user, _)) for _ in ('username', 'email', 'real_name',
+                                                    'password', 'bio', 'status', 'role'))
         q.mset(data)
         return q.condition('uid', user.uid).execute()
 
     def delete(self, user):
         return db.delete(self.table).condition('uid', user.uid).execute()
 
+
 class PostMapper(BaseMapper):
 
     table = 'posts'
     model = Post
-    
+
     def find(self, pid):
-        data = db.select(self.table).fields('title', 'slug', 'description', 'html', 'css', 'js', 
-            'category', 'status', 'comments', 'author', 'created', 'pid').condition('pid', pid).execute()
+        data = db.select(self.table).fields('title', 'slug', 'description', 'html', 'css', 'js',
+                                            'category', 'status', 'comments', 'author', 'created', 'pid').condition('pid', pid).execute()
         if data:
             return self.load(data[0], self.model)
 
@@ -115,43 +115,41 @@ class PostMapper(BaseMapper):
 
     def create(self, post):
         row = []
-        for _ in ('title', 'slug', 'description', 'created', 'html', 'css', 'js', 
-            'category', 'status', 'comments', 'author'):
+        for _ in ('title', 'slug', 'description', 'created', 'html', 'css', 'js',
+                  'category', 'status', 'comments', 'author'):
             row.append(getattr(post, _))
-        return db.insert(self.table).columns('title', 'slug', 'description', 'created', 'html', 'css', 'js', 
-            'category', 'status', 'comments', 'author').values(row).execute()
+        return db.insert(self.table).columns('title', 'slug', 'description', 'created', 'html', 'css', 'js',
+                                             'category', 'status', 'comments', 'author').values(row).execute()
 
     def paginate(self, page=1, perpage=10, category=None):
         """Paginate the posts"""
-        q = db.select(self.table).fields('title', 'slug', 'description', 'html', 'css', 'js', 
-            'category', 'status', 'comments', 'author', 'created', 'pid')
+        q = db.select(self.table).fields('title', 'slug', 'description', 'html', 'css', 'js',
+                                         'category', 'status', 'comments', 'author', 'created', 'pid')
         if category:
             q.condition('category', category)
         results = (q.limit(perpage).offset((page - 1) * perpage)
                     .order_by('created', 'DESC').execute())
         return [self.load(data, self.model) for data in results]
 
-
     def save(self, page):
         q = db.update(self.table)
-        data = dict( (_, getattr(page, _)) for _ in ('title', 'slug', 'description', 'html', 'css', 'js', 
-            'category', 'status', 'comments'))
+        data = dict((_, getattr(page, _)) for _ in ('title', 'slug', 'description', 'html', 'css', 'js',
+                                                    'category', 'status', 'comments'))
         q.mset(data)
         return q.condition('pid', page.pid).execute()
 
     def delete(self, page_id):
         return db.delete(self.table).condition('pid', page_id).execute()
 
-
     def category_count(self, category_id):
-        return db.select(self.table).fields(db.expr('count(*)', 
-            'total')).condition('category', category_id).condition('status', 'published').execute()[0][0]
-
+        return db.select(self.table).fields(db.expr('count(*)',
+                                                    'total')).condition('category', category_id).condition('status', 'published').execute()[0][0]
 
 
 __backends = {}
 __backends['post'] = PostMapper()
 __backends['user'] = UserMapper()
+
 
 def Backend(name):
     return __backends.get(name)

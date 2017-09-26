@@ -16,10 +16,10 @@
 import sys
 import logging
 from db.errors import DBError
-import time
 from db.pool import ConnectionPool
 
 LOGGER = logging.getLogger('db')
+
 
 class DB(object):
 
@@ -43,27 +43,55 @@ class DB(object):
         self.dialect = self.dialect_class(adapter)(self)
 
     def select(self, table):
+        """Select sql executor
+
+
+        :param table: table name
+        :type table: str
+        :returns: select query instance
+        """
         return self.dialect.select(table)
 
     def insert(self, table):
+        """insert sql executor
+
+
+        :param table: table name
+        :type table: str
+        :returns: insert query instance
+        """
         return self.dialect.insert(table)
 
     def update(self, table):
+        """update sql executor
+
+
+        :param table: table name
+        :type table: str
+        :returns: update query instance
+        """
         return self.dialect.update(table)
 
     def delete(self, table):
+        """delete sql executor
+
+
+        :param table: table name
+        :type table: str
+        :returns: delete query instance
+        """
         return self.dialect.delete(table)
 
     def query(self, sql, args=None, many=None, as_dict=False):
         """The connection raw sql query,  when select table,  show table
-            to fetch records, it is compatible the dbi execute method::
+            to fetch records, it is compatible the dbi execute method.
 
-        args:
-        sql string: the sql stamtement like 'select * from %s'
-        args maybe list: Wen set None, will use dbi execute(sql), else
+
+        :param sql string: the sql stamtement like 'select * from %s'
+        :param args  list: Wen set None, will use dbi execute(sql), else
             dbi execute(sql, args), the args keep the original rules, it shuld be tuple or list of list
-        many maybe int: when set, the query method will return genarate an iterate
-        as_dict bool: when is true, the type of row will be dict, otherwise is tuple
+        :param many  int: when set, the query method will return genarate an iterate
+        :param as_dict bool: when is true, the type of row will be dict, otherwise is tuple
         """
         con = self.pool.pop()
         c = None
@@ -83,7 +111,7 @@ class DB(object):
             many or (c and c.close())
             many or (con and self.pool.push(con))
 
-    def _yield(self, con, cursor , many):
+    def _yield(self, con, cursor, many):
         try:
             result = cursor.fetchmany(many)
             while result:
@@ -95,7 +123,13 @@ class DB(object):
             con and self.pool.push(con)
 
     def execute(self, sql, args=None):
-        """It is used for update, delete records::
+        """It is used for update, delete records.
+
+        :param sql string: the sql stamtement like 'select * from %s'
+        :param args  list: Wen set None, will use dbi execute(sql), else
+            dbi execute(sql, args), the args keep the original rules, it shuld be tuple or list of list
+
+        eg::
 
             execute('insert into users values(%s, %s)', [(1L, 'blablabla'), (2L, 'animer')])
             execute('delete from users')
@@ -124,19 +158,19 @@ class DB(object):
             c and c.close()
             con and self.pool.push(con)
 
-
     def transaction(self):
         return Transaction(self)
 
     def connection_class(self, adapter):
+        """Get connection class by adapter"""
         if self.adapters.get(adapter):
             return self.adapters[adapter]
         try:
             class_prefix = getattr(
                 __import__('db.' + adapter, globals(), locals(),
-                           ['__class_prefix__']),  '__class_prefix__')
+                           ['__class_prefix__']), '__class_prefix__')
             driver = self._import_class('db.' + adapter + '.connection.' +
-                                  class_prefix + 'Connection')
+                                        class_prefix + 'Connection')
         except ImportError:
             raise DBError("Must install adapter `%s` or doesn't support" %
                           (adapter))
@@ -145,14 +179,15 @@ class DB(object):
         return driver
 
     def dialect_class(self, adapter):
+        """Get dialect sql class by adapter"""
         if self.dialects.get(adapter):
             return self.dialects[adapter]
         try:
             class_prefix = getattr(
                 __import__('db.' + adapter, globals(), locals(),
-                            ['__class_prefix__']),  '__class_prefix__')
-            driver = self._import_class('db.' + adapter + '.dialect.' + 
-                                     class_prefix + 'Dialect')
+                           ['__class_prefix__']), '__class_prefix__')
+            driver = self._import_class('db.' + adapter + '.dialect.' +
+                                        class_prefix + 'Dialect')
         except ImportError:
             raise DBError("Must install adapter `%s` or doesn't support" %
                           (adapter))
@@ -161,6 +196,7 @@ class DB(object):
         return driver
 
     def _import_class(self, module2cls):
+        """Import class by module dot split string"""
         d = module2cls.rfind(".")
         classname = module2cls[d + 1: len(module2cls)]
         m = __import__(module2cls[0:d], globals(), locals(), [classname])
@@ -173,7 +209,7 @@ class lazy_attr(object):
         self.wrapped = wrapped
         try:
             self.__doc__ = wrapped.__doc__
-        except: # pragma: no cover
+        except:  # pragma: no cover
             pass
 
     def __get__(self, inst, objtype=None):
@@ -183,7 +219,9 @@ class lazy_attr(object):
         setattr(inst, self.wrapped.__name__, val)
         return val
 
+
 class Transaction(object):
+    """Database sql Transaction"""
 
     def __init__(self, db):
         self._db = db
@@ -204,39 +242,45 @@ class Transaction(object):
             self._con.commit()
             self._con.autocommit(True)
         except Exception as e:
-            err_trace = sys.exc_info()[2]
             try:
                 self._con.rollback()
             except Exception as e_:
                 LOGGER.error('When transaction happend error: %s', e_)
-            raise e, None, err_trace
+            raise e
         finally:
             self._db.pool.push(self._con)
             self._con = None
             self._db = None
 
     def begin(self):
+        """Begins transaction"""
         self._con = self._db.pool.pop()
         self._con.ensure_connect()
         self._con.autocommit(False)
 
     def commit(self):
+        """Commits transaction"""
         try:
             self._con.commit()
             self._con.autocommit(True)
         except Exception as e:
-            err_trace = sys.exc_info()[2]
             try:
                 self._con.rollback()
             except Exception as e_:
                 LOGGER.error('When transaction happend error: %s', e_)
-            raise e, None, err_trace
+            raise e
         finally:
             self._db.pool.push(self._con)
             self._con = None
             self._db = None
 
     def execute(self, sql, args):
+        """Execute sql
+
+        :param sql string: the sql stamtement like 'select * from %s'
+        :param args  list: Wen set None, will use dbi execute(sql), else
+            db execute(sql, args), the args keep the original rules, it shuld be tuple or list of list
+        """
         c = None
         try:
             c = self._con.cursor()
@@ -257,10 +301,13 @@ class Transaction(object):
             c and c.close()
 
     def insert(self, table):
+        """Insert sql diaect"""
         return self.dialect.insert(table)
 
     def update(self, table):
+        """update sql diaect"""
         return self.dialect.update(table)
 
     def delete(self, table):
+        """delete sql diaect"""
         return self.dialect.delete(table)
